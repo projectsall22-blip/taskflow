@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import path from 'path';
 import { AppError } from './lib/errors';
-import { Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 import { authRouter } from './routers/auth.router';
 import { projectsRouter } from './routers/projects.router';
@@ -41,8 +41,8 @@ export function createApp() {
 
     // Prisma unique constraint violation → 409
     if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      (err as Prisma.PrismaClientKnownRequestError).code === 'P2002'
+      err instanceof PrismaClientKnownRequestError &&
+      err.code === 'P2002'
     ) {
       return res.status(409).json({
         error: { code: 'CONFLICT', message: 'Resource already exists' },

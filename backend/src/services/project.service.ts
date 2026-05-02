@@ -1,9 +1,12 @@
 import { prisma } from '../lib/prisma';
 import { notFound, conflict, badRequest } from '../lib/errors';
 import type { CreateProjectInput } from '../schemas/project.schema';
-import type { Prisma } from '@prisma/client';
+import type { Prisma, ProjectMember, Project, User } from '@prisma/client';
 
 type PrismaTransactionClient = Prisma.TransactionClient;
+
+type MembershipWithProject = ProjectMember & { project: Project };
+type MemberWithUser = ProjectMember & { user: User };
 
 export const projectService = {
   async create(userId: string, data: CreateProjectInput) {
@@ -43,7 +46,7 @@ export const projectService = {
       },
     });
 
-    return memberships.map((m) => ({
+    return memberships.map((m: MembershipWithProject) => ({
       id: m.project.id,
       name: m.project.name,
       description: m.project.description,
@@ -66,7 +69,7 @@ export const projectService = {
       throw notFound('Project not found');
     }
 
-    const membership = project.members.find((m) => m.userId === userId);
+    const membership = project.members.find((m: MemberWithUser) => m.userId === userId);
     if (!membership) {
       throw notFound('Project not found');
     }
@@ -77,7 +80,7 @@ export const projectService = {
       description: project.description,
       role: membership.role,
       createdAt: project.createdAt.toISOString(),
-      members: project.members.map((m) => ({
+      members: project.members.map((m: MemberWithUser) => ({
         userId: m.userId,
         email: m.user.email,
         displayName: m.user.displayName,
@@ -116,7 +119,7 @@ export const projectService = {
       include: { user: true },
     });
 
-    return members.map((m) => ({
+    return members.map((m: MemberWithUser) => ({
       userId: m.userId,
       email: m.user.email,
       displayName: m.user.displayName,
