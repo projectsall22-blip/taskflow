@@ -18,7 +18,7 @@ async function main() {
   // Run migrations on startup
   try {
     console.log('[startup] Running database migrations...');
-    execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+    execSync('npx prisma migrate deploy --schema=./backend/prisma/schema.prisma', { stdio: 'inherit' });
     console.log('[startup] Migrations complete.');
   } catch (err) {
     console.error('[startup] Migration failed:', err);
