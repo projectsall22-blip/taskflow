@@ -46,7 +46,7 @@ export const dashboardService = {
     const overdueTasks = [];
 
     for (const task of tasks) {
-      taskCounts[task.status]++;
+      taskCounts[task.status as TaskStatus]++;
       if (task.dueDate && task.dueDate < now && task.status !== 'DONE') {
         overdueTasks.push(formatTask(task));
       }
@@ -77,7 +77,7 @@ export const dashboardService = {
     const overdueTasks = [];
 
     for (const task of tasks) {
-      taskCounts[task.status]++;
+      taskCounts[task.status as TaskStatus]++;
       if (task.dueDate && task.dueDate < now && task.status !== 'DONE') {
         overdueTasks.push(formatTask(task));
       }

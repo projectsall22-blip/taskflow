@@ -42,7 +42,7 @@ export function createApp() {
     // Prisma unique constraint violation → 409
     if (
       err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === 'P2002'
+      (err as Prisma.PrismaClientKnownRequestError).code === 'P2002'
     ) {
       return res.status(409).json({
         error: { code: 'CONFLICT', message: 'Resource already exists' },

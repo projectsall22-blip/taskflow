@@ -1,10 +1,13 @@
 import { prisma } from '../lib/prisma';
 import { notFound, conflict, badRequest } from '../lib/errors';
 import type { CreateProjectInput } from '../schemas/project.schema';
+import type { Prisma } from '@prisma/client';
+
+type PrismaTransactionClient = Prisma.TransactionClient;
 
 export const projectService = {
   async create(userId: string, data: CreateProjectInput) {
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
       const project = await tx.project.create({
         data: {
           name: data.name,

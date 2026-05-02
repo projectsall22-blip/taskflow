@@ -2,12 +2,12 @@
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ["npm ci --workspace=backend"]
+cmds = ["npm ci --workspace=backend --include=dev"]
 
 [phases.build]
 cmds = [
-  "npm run db:generate --workspace=backend",
-  "npm run build --workspace=backend"
+  "cd backend && npx prisma generate",
+  "cd backend && npx tsc"
 ]
 
 [start]
